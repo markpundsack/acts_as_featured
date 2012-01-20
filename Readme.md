@@ -71,6 +71,16 @@ Of course, the real value is when you use FFaaS and use the admin panel to manag
 
 ## Example
 
+    class User
+      acts_as_featured
+      has_many :apps
+    end
+    
+    class App
+      belongs_to :user
+      acts_as_featured :override_with => :user
+    end
+    
     User.enable_features_for_everyone(:biggerfasterstronger)
     User.enable_features_for_tag(:internal, :moreplus)
     u = User.create!
@@ -82,8 +92,13 @@ Of course, the real value is when you use FFaaS and use the admin panel to manag
     u.features # => [:biggerfasterstronger,:moreplus]
     u.feature_enabled?(:moreplus) # => true
     u.feature_enabled?(:biggerfasterstronger) # => true
+    a = u.apps.first
+    # app checks it's user to look for overrides
+    a.feature_enabled?(:biggerfasterstronger) # => true
     
     FeatureFlags.create!(:class => :User, :parent_id => u.id, :feature => :lessismore)
     FeatureFlags.create!(:class => :App, :parent_id => u.apps.first.id, :feature => :lessismore)
     ff = FeatureFlags.find_by_class_and_parent_id(:class => :User, :parent_id => u.id) # [:biggerfasterstronger,:moreplus]
-    
+
+## Questions
+Is it better to have for_everyone set it once for all current parents, but not future ones, and rely on for_new to handle that? Or have for_everyone be a meta declaration? The latter allows for a sparse database where the records for an individual user can be blank, yet several feature flags can be associated with that account. The downside is that it's impossible to handle everyone-except-these. If that's important, a third state could be added to feature flags. e.g. on, off, disabled - where off would get the for_everyone defaults, but disabled would override that. I don't think the complexity is worth it. The value of the feature flags model is it's simplicity. Having "everyone" as a meta flag allows the data to be stored outside of the User table, or even outside of the application space altogether. e.g. a Heroku add-on doesn't need to be able to query what all the user IDs are. It just tracks the ones with exceptions. Without that, there would have to be a callback; either http or a rake task callable via `heroku run`
