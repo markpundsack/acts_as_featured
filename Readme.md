@@ -56,19 +56,25 @@ Optionally, add or remove tags to users to enable groups of features:
 
 ## Administration
 
-    User.set_default_features(:feature1, :feature2)
-    User.default_features # => [:feature1, :feature2]
-    User.set_tag_features(:tag1, :feature2)
+    User.enable_features_for_everyone(:feature1, :feature2)
+    User.features_for_everyone # => [:feature1, :feature2]
+    User.enable_features_for_tag(:tag1, :feature2)
+    User.features_for_tag(:tag1) # => [:feature2]
+    User.enable_features_for_new(:feature3)
+    User.features_for_new # => [:feature3]
+    User.enable_features_for_every_other_new(:feature4)
+    User.features_for_every_other_new # => [:feature4]
 
 ## Example
 
-    User.set_default_features(:biggerfasterstronger)
-    User.set_tag_features(:internal, :moreplus)
-    user = User.create!
-    user.features # => [:biggerfasterstronger]
-    user.tag(:internal)
-    user.features # => [:biggerfasterstronger, :moreplus]
-    user.disable_feature(:biggerfasterstronger)
-    user.features # => [:moreplus]
-    user.feature_enabled?(:moreplus) # => true
-    user.feature_enabled?(:biggerfasterstronger) # => false
+    User.enable_features_for_everyone(:biggerfasterstronger)
+    User.enable_features_for_tag(:internal, :moreplus)
+    u = User.create!
+    u.features # => [:biggerfasterstronger]
+    u.tag(:internal)
+    u.features # => [:biggerfasterstronger, :moreplus]
+    u.disable_feature(:biggerfasterstronger)
+    # Disabling features doesn't override the features for everyone or tags
+    u.features # => [:biggerfasterstronger,:moreplus]
+    u.feature_enabled?(:moreplus) # => true
+    u.feature_enabled?(:biggerfasterstronger) # => false
