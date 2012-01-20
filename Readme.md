@@ -1,7 +1,9 @@
 # acts_as_featured
 acts_as_featured makes adding and administering feature flags easier. Feature flags allow you to separate deployment of code from delivery of features. For example you can add a set of features into your code, wrapped in a feature flag, and roll that code out without it affecting any of your users. Then you can selectively enable that feature for some of your users, validate the feature, then enable it for everyone else. Finally, remove the feature flag entirely.
 
-It is designed for Rails, but should work for any Ruby app with a database using ActiveRecord. Additionally, it is designed to work with the Heroku Add-on Feature Flags as a Service (FFaaS).
+It is designed for Rails, but should work for any Ruby app with a database using ActiveRecord. 
+
+Additionally, it is designed to work with the Heroku Add-on Feature Flags as a Service (FFaaS). If the environment variable FEATURE_FLAGS_URL exists, it will use that to connect to the FFaaS service.
 
 ## Installation
 
