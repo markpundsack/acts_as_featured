@@ -66,6 +66,8 @@ Optionally, add or remove tags to users to enable groups of features:
     User.features_for_new # => [:feature3]
     User.enable_features_for_every_other_new(:feature4)
     User.features_for_every_other_new # => [:feature4]
+    
+Of course, the real value is when you use FFaaS and use the admin panel to manage feature flags without any code.
 
 ## Example
 
@@ -79,4 +81,9 @@ Optionally, add or remove tags to users to enable groups of features:
     # Disabling features doesn't override the features for everyone or tags
     u.features # => [:biggerfasterstronger,:moreplus]
     u.feature_enabled?(:moreplus) # => true
-    u.feature_enabled?(:biggerfasterstronger) # => false
+    u.feature_enabled?(:biggerfasterstronger) # => true
+    
+    FeatureFlags.create!(:class => :User, :parent_id => u.id, :feature => :lessismore)
+    FeatureFlags.create!(:class => :App, :parent_id => u.apps.first.id, :feature => :lessismore)
+    ff = FeatureFlags.find_by_class_and_parent_id(:class => :User, :parent_id => u.id) # [:biggerfasterstronger,:moreplus]
+    
