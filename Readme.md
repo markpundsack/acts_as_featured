@@ -43,6 +43,10 @@ Check if a feature is enabled:
 Disable a feature:
 
     user.disable_feature(:feature1)
+    
+See what features are enabled for a user:
+
+    user.features # => [:feature1]
 
 Optionally, add or remove tags to users to enable groups of features:
 
@@ -55,3 +59,14 @@ Optionally, add or remove tags to users to enable groups of features:
     User.set_default_features(:feature1, :feature2)
     User.default_features # => [:feature1, :feature2]
     User.set_tag_features(:tag1, :feature2)
+
+## Example
+
+    User.set_default_features(:biggerfasterstronger)
+    User.set_tag_features(:internal, :moreplus)
+    user = User.create!
+    user.tag(:internal)
+    user.disable_feature(:biggerfasterstronger)
+    user.feautres # => [:moreplus]
+    user.feature_enabled?(:moreplus) # => true
+    user.feature_enabled?(:biggerfasterstronger) # => false
